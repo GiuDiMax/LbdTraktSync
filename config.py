@@ -1,0 +1,16 @@
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+LETTERBOXD_USERNAME = os.getenv('LETTERBOXD_USERNAME')
+LETTERBOXD_ID = os.getenv('LETTERBOXD_ID')
+LETTERBOXD_CLIENT = os.getenv('LETTERBOXD_CLIENT')
+LETTERBOXD_SECRET = os.getenv('LETTERBOXD_SECRET')
+LETTERBOXD_PWD = os.getenv('LETTERBOXD_PWD')
+
+TRAKT_CLIENT = os.getenv('TRAKT_CLIENT')
+TRAKT_CODE = os.getenv('TRAKT_CODE')
+TRAKT_SECRET = os.getenv('TRAKT_SECRET')
+
+MONGO_CLIENT_STRING = os.getenv('MONGO_CLIENT_STRING')
