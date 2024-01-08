@@ -15,7 +15,7 @@ async def root():
 
 
 @app.get("/ratings")
-async def library():
+async def ratings():
     t = Thread(target=syncAll)
     t.start()
     return "started"
