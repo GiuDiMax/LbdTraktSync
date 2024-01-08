@@ -17,6 +17,7 @@ async def root():
 @app.get("/ratings")
 async def ratings():
     t = Thread(target=syncAll)
+    print("ratings start")
     t.start()
     return "started"
 
@@ -24,6 +25,7 @@ async def ratings():
 @app.get("/library")
 async def library():
     t = Thread(target=getDiff)
+    print("library start")
     t.start()
     return "started"
 
