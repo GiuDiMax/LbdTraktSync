@@ -1,21 +1,18 @@
 from lbdConfig import getLetterboxdHeader, letterboxdbaseurl, lbduid
 import requests
 from traktConfig import getTraktHeaders, traktbaseurl
-from threading import Thread
 
 
 def syncAll():
     total = []
     a = getLetterboxdRatings()
-    print(len(a))
     b = getTraktRatings()
-    print(len(b))
     for element in a:
         if element not in b:
-            total.append(element)
-    print(len(total))
+            total.append({'ids': {'tmdb': element['tmdb']}, 'rating': element['rating']})
     if total is None:
         return
+    print(len(total))
     x = requests.post(traktbaseurl + '/sync/ratings', headers=getTraktHeaders(), json={'movies': total}).json()
     return x
 
@@ -26,7 +23,7 @@ def getTraktRatings():
     for item in x:
         if 'tmdb' not in item['movie']['ids']:
             continue
-        totale.append({'tmdb': item['movie']['ids']['tmdb'], 'rating': item['rating']})
+        totale.append({'tmdb': int(item['movie']['ids']['tmdb']), 'rating': item['rating']})
     return totale
 
 
@@ -40,11 +37,13 @@ def getLetterboxdRatings():
             f = {}
             for link in item['links']:
                 if link['type'] == 'tmdb':
-                    f['tmdb'] = link['id']
-                    #f['ids'] = {'tmdb': link['id']}
+                    if 'movie' in link['url']:
+                        f['tmdb'] = int(link['id'])
+                        #f['ids'] = {'tmdb': link['id']}
                     break
             f['rating'] = int(item['relationships'][0]['relationship']['rating'] * 2)
-            totale.append(f)
+            if 'tmdb' in f:
+                totale.append(f)
         if 'next' not in x:
             return totale
         cursor = x['next']

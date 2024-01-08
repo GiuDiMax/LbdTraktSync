@@ -9,6 +9,7 @@ client_id = LETTERBOXD_CLIENT
 client_secret = LETTERBOXD_SECRET
 username = LETTERBOXD_USERNAME
 password = LETTERBOXD_PWD
+listid = LETTERBOXD_LISTID
 
 
 def refreshToken():
