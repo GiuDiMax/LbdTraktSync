@@ -1,39 +1,25 @@
-from fastapi import FastAPI
+from flask import Flask, render_template, redirect, flash, send_from_directory, make_response, send_file, jsonify
 from syncLast import syncLast
 from syncAllRatings import syncAll
 from syncLibrary import getDiff
-import uvicorn
-from threading import Thread
 
-app = FastAPI()
-# uvicorn main:app --reload
+app = Flask(__name__)
 
 
-@app.get("/")
-async def root():
-    return syncLast()
+@app.route('/', methods=['POST', 'GET'])
+def home():
+    return jsonify(syncLast())
 
 
-@app.get("/ratings")
-async def ratings():
-    t = Thread(target=syncAll)
-    print("ratings start")
-    t.start()
-    return "started"
+@app.route('/library', methods=['POST', 'GET'])
+def ratings():
+    return jsonify(getDiff())
 
 
-@app.get("/library")
-async def library():
-    t = Thread(target=getDiff)
-    print("library start")
-    t.start()
-    return "started"
+@app.route('/ratings', methods=['POST', 'GET'])
+def ratings():
+    return jsonify(syncAll())
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
-
-
-if __name__ == "__main__":
-  uvicorn.run("main:app", reload=True)
+if __name__ == '__main__':
+    app.run()

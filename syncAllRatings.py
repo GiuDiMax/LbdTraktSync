@@ -4,7 +4,6 @@ from traktConfig import getTraktHeaders, traktbaseurl
 
 
 def syncAll():
-    print("start SyncAll")
     total = []
     a = getLetterboxdRatings()
     b = getTraktRatings()
