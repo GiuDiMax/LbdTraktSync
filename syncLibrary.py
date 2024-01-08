@@ -110,6 +110,9 @@ def getLetterboxdLibrary():
     totale = []
     while True:
         x = requests.get(letterboxdbaseurl + f'/list/{listid}/entries?cursor={cursor}', headers=headers).json()
+        if 'items' not in x:
+            print(x)
+            return totale
         for item in x['items']:
             f = {}
             for link in item['film']['links']:
