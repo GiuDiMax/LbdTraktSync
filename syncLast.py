@@ -1,10 +1,11 @@
 from lbdConfig import getLetterboxdHeader, letterboxdbaseurl, lbduid
 from traktConfig import getTraktHeaders, traktbaseurl
 import requests
-from datetime import datetime, timedelta, date
+from datetime import datetime as dt
 
 
 def syncLast():
+    global lastentry
     x = {}
     tmdb = 0
     item = getLastActivity()
@@ -31,8 +32,8 @@ def syncLast():
         if tmdb == 0:
             x['error'] = "no tmdb code"
             return x
-        d1 = datetime.fromisoformat(getLastTrakt())
-        d2 = datetime.fromisoformat(item['diaryEntry']['whenCreated'])
+        d1 = dt.fromisoformat(getLastTrakt())
+        d2 = dt.fromisoformat(item['diaryEntry']['whenCreated'])
         diff = abs((d1-d2).total_seconds())
         if diff >= 1800:
             movie = {"movies": [{"watched_at": item['diaryEntry']['whenCreated'], "ids": {"tmdb": tmdb}}]}
@@ -43,6 +44,7 @@ def syncLast():
             movie = {"movies": [{"rating": rating, "ids": {"tmdb": tmdb}}]}
             y = requests.post(traktbaseurl + '/sync/ratings', headers=getTraktHeaders(), json=movie).json()
             x['type'] = x['type'] + ' - FilmRatingActivity'
+    lastentry = item
     return x
 
 
@@ -64,7 +66,6 @@ def getLastActivity():
             return None
     except:
         pass
-    lastentry = item
     return item
 
 
