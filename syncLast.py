@@ -1,8 +1,8 @@
 from lbdConfig import getLetterboxdHeader, letterboxdbaseurl, lbduid
 from traktConfig import getTraktHeaders, traktbaseurl
 import requests
-from datetime import datetime as dt
-
+from datetime import datetime
+from dateutil.parser import parse
 
 def syncLast():
     global lastentry
@@ -32,8 +32,8 @@ def syncLast():
         if tmdb == 0:
             x['error'] = "no tmdb code"
             return x
-        d1 = dt.fromisoformat(getLastTrakt())
-        d2 = dt.fromisoformat(item['diaryEntry']['whenCreated'])
+        d1 = parse(getLastTrakt())
+        d2 = parse(item['diaryEntry']['whenCreated'])
         diff = abs((d1-d2).total_seconds())
         if diff >= 1800:
             movie = {"movies": [{"watched_at": item['diaryEntry']['whenCreated'], "ids": {"tmdb": tmdb}}]}
