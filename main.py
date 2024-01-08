@@ -12,7 +12,7 @@ def home():
 
 
 @app.route('/library', methods=['POST', 'GET'])
-def ratings():
+def library():
     return jsonify(getDiff())
 
 
