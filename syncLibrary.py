@@ -109,7 +109,7 @@ def getLetterboxdLibrary():
     cursor = 'start=0'
     totale = []
     while True:
-        x = requests.get(letterboxdbaseurl + f'/list/{listid}/entries?cursor={cursor}', headers=headers).json()
+        x = requests.get(letterboxdbaseurl + f'/list/{listid}/entries?perPage=100&cursor={cursor}', headers=headers).json()
         if 'items' not in x:
             print(x)
             return totale
