@@ -1,7 +1,7 @@
 from lbdConfig import getLetterboxdHeader, letterboxdbaseurl, lbduid, listid
 import requests
 from traktConfig import getTraktHeaders, traktbaseurl
-
+import time
 
 def setWatchlist():
     a = set(getLbdWatchlist())
@@ -12,10 +12,11 @@ def setWatchlist():
         toAdd.append({'ids': {'tmdb': item}})
     for item in list(b - a):
         toRemove.append({'ids': {'tmdb': item}})
-    x = requests.post(traktbaseurl + '/sync/watchlist', headers=getTraktHeaders(), json={'movies': toAdd}).json()
-    print(x)
-    y = requests.post(traktbaseurl + '/sync/watchlist/remove', headers=getTraktHeaders(), json={'movies': toRemove}).json()
-    print(y)
+    x = requests.post(traktbaseurl + '/sync/watchlist', headers=getTraktHeaders(), json={'movies': toAdd})
+    print(x.text)
+    time.sleep(2)
+    y = requests.post(traktbaseurl + '/sync/watchlist/remove', headers=getTraktHeaders(), json={'movies': toRemove})
+    print(y.text)
 
 
 def getTraktWatchlist():

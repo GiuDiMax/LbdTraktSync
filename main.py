@@ -9,7 +9,6 @@ app = Flask(__name__)
 
 @app.route('/', methods=['POST', 'GET'])
 def home():
-
     return jsonify(syncLast())
 
 

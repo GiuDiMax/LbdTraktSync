@@ -1,12 +1,14 @@
 from syncWatchlist import setWatchlist
 from syncAllRatings import syncAll
 from syncLibrary import getDiff
-
+import time
 
 if __name__ == '__main__':
-    print("SET LIBRARY")
+    print("\nSET LIBRARY")
     getDiff()
-    print("SET WATCHLIST")
+    time.sleep(1)
+    print("\nSET WATCHLIST")
     setWatchlist()
-    print("SET RATINGS")
+    time.sleep(1)
+    print("\nSET RATINGS")
     syncAll()
