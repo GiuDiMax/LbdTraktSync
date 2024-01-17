@@ -3,6 +3,7 @@ import requests
 from traktConfig import getTraktHeaders, traktbaseurl
 import time
 
+
 def setWatchlist():
     a = set(getLbdWatchlist())
     b = set(getTraktWatchlist())

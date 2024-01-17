@@ -5,7 +5,7 @@ import time
 
 if __name__ == '__main__':
     print("\nSET LIBRARY")
-    getDiff()
+    getDiff(plex=True)
     time.sleep(1)
     print("\nSET WATCHLIST")
     setWatchlist()

@@ -15,3 +15,5 @@ TRAKT_CODE = os.getenv('TRAKT_CODE')
 TRAKT_SECRET = os.getenv('TRAKT_SECRET')
 
 MONGO_CLIENT_STRING = os.getenv('MONGO_CLIENT_STRING')
+PLEX_TOKEN = os.getenv('PLEX_TOKEN')
+PLEX_URL = os.getenv('PLEX_URL')

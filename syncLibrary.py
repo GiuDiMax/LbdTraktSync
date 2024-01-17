@@ -1,10 +1,14 @@
 from lbdConfig import getLetterboxdHeader, letterboxdbaseurl, lbduid, listid
 import requests
 from traktConfig import getTraktHeaders, traktbaseurl
+from plexConfig import get_plex_movie
 
 
-def getDiff():
-    a = getTraktLibrary()
+def getDiff(plex=False):
+    if plex:
+        a = getPlexLibrary()
+    else:
+        a = getTraktLibrary()
     b = getLetterboxdLibrary()
     mancanti = []
     toRemove = []
@@ -75,6 +79,46 @@ def getTraktLibrary():
     return totale
 
 
+def getPlexLibrary():
+    totale = []
+    films = get_plex_movie('FILM')
+    for f in films:
+        notes = ""
+        f.reload()
+        tmdb = 0
+        for g in f.guids:
+            if 'tmdb://' in str(g):
+                tmdb = int(str(g.id).replace("tmdb://", ""))
+                break
+        for m in f.media:
+            sub = ""
+            audio = ""
+            for p in m.parts:
+                for s in p.streams:
+                    if s.streamType == 1:
+                        if "k" in str(m.videoResolution):
+                            notes = notes + str(s.codec).title() + " " + str(m.videoResolution)
+                        else:
+                            notes = notes + str(s.codec).title() + " " + str(m.videoResolution) + "p"
+                        if s.colorPrimaries == "bt2020":
+                            notes = notes + " HDR"
+                        if s.DOVIBLPresent:
+                            notes = notes + " DV"
+                    elif s.streamType == 2:
+                        if str(s.languageCode) not in sub:
+                            audio = audio + "-" + str(s.languageCode)
+                    elif s.streamType == 3:
+                        if str(s.languageCode) not in sub:
+                            sub = sub + "-" + str(s.languageCode)
+                if audio != "":
+                    notes = notes + " | " + audio[1:]
+                if sub != "":
+                    notes = notes + " | sub " + sub[1:]
+            notes = notes + " | " + str(m.bitrate) + " kbps\n"
+        totale.append({'tmdb': tmdb, 'notes': notes[:-1]})
+    return totale
+
+
 def getLbd(tmdb):
     headers = getLetterboxdHeader()
     x = requests.get(letterboxdbaseurl + f'/films?filmId=tmdb:{tmdb}', headers=headers).json()['items']
@@ -133,4 +177,5 @@ def getLetterboxdLibrary():
 if __name__ == '__main__':
     #print(getLbd(84958))
     #print(getLetterboxdLibrary())
-    getDiff()
+    #getDiff()
+    print(getDiff(plex=True))
