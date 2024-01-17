@@ -2,7 +2,9 @@ from lbdConfig import getLetterboxdHeader, letterboxdbaseurl, lbduid, listid
 import requests
 from traktConfig import getTraktHeaders, traktbaseurl
 from plexConfig import get_plex_movie
+from threading import Thread
 
+global plextot
 
 def getDiff(plex=False):
     if plex:
@@ -79,44 +81,67 @@ def getTraktLibrary():
     return totale
 
 
-def getPlexLibrary():
-    totale = []
-    films = get_plex_movie('FILM')
-    for f in films:
-        notes = ""
+def setMoviePlex(f):
+    global plextot
+    notes = ""
+    tmdb = 0
+    for g in f.guids:
+        if 'tmdb://' in str(g):
+            tmdb = int(str(g.id).replace("tmdb://", ""))
+            break
+    try:
         f.reload()
-        tmdb = 0
-        for g in f.guids:
-            if 'tmdb://' in str(g):
-                tmdb = int(str(g.id).replace("tmdb://", ""))
-                break
-        for m in f.media:
-            sub = ""
-            audio = ""
-            for p in m.parts:
-                for s in p.streams:
-                    if s.streamType == 1:
-                        if "k" in str(m.videoResolution):
-                            notes = notes + str(s.codec).title() + " " + str(m.videoResolution)
-                        else:
-                            notes = notes + str(s.codec).title() + " " + str(m.videoResolution) + "p"
-                        if s.colorPrimaries == "bt2020":
-                            notes = notes + " HDR"
-                        if s.DOVIBLPresent:
-                            notes = notes + " DV"
-                    elif s.streamType == 2:
-                        if str(s.languageCode) not in sub:
-                            audio = audio + "-" + str(s.languageCode)
-                    elif s.streamType == 3:
-                        if str(s.languageCode) not in sub:
-                            sub = sub + "-" + str(s.languageCode)
-                if audio != "":
-                    notes = notes + " | " + audio[1:]
-                if sub != "":
-                    notes = notes + " | sub " + sub[1:]
-            notes = notes + " | " + str(m.bitrate) + " kbps\n"
-        totale.append({'tmdb': tmdb, 'notes': notes[:-1]})
-    return totale
+    except:
+        plextot.append({'tmdb': tmdb})
+        return
+    for m in f.media:
+        sub = ""
+        audio = ""
+        for p in m.parts:
+            for s in p.streams:
+                if s.streamType == 1:
+                    if "k" in str(m.videoResolution):
+                        notes = notes + str(s.codec).title() + " " + str(m.videoResolution)
+                    else:
+                        notes = notes + str(s.codec).title() + " " + str(m.videoResolution) + "p"
+                    if s.colorPrimaries == "bt2020":
+                        notes = notes + " HDR"
+                    if s.DOVIBLPresent:
+                        notes = notes + " DV"
+                elif s.streamType == 2:
+                    if str(s.languageCode) not in sub:
+                        audio = audio + "-" + str(s.languageCode)
+                elif s.streamType == 3:
+                    if str(s.languageCode) not in sub:
+                        sub = sub + "-" + str(s.languageCode)
+            if audio != "":
+                notes = notes + " | " + audio[1:]
+            if sub != "":
+                notes = notes + " | sub " + sub[1:]
+        notes = notes + " | " + str(m.bitrate) + " kbps\n"
+    plextot.append({'tmdb': tmdb, 'notes': notes[:-1]})
+
+
+def getPlexLibrary():
+    global plextot
+    plextot = []
+    films = get_plex_movie('FILM')
+    tth = []
+    i = 0
+    j = 0
+    for f in films:
+        i = i + 1
+        tth.append(Thread(target=setMoviePlex, args=(f,)))
+        if i > 50:
+            j = j + 1
+            print("ok " + str(50*j))
+            for t in tth:
+                t.start()
+            for t in tth:
+                t.join()
+            i = 0
+            tth = []
+    return plextot
 
 
 def getLbd(tmdb):
@@ -143,9 +168,9 @@ def addMovies(toRemove, movies):
         return
     x = requests.patch(letterboxdbaseurl + f'/list/{listid}', headers=headers, json=data).json()
     if 'data' in x:
-        print("ok")
+        print("ok aggiunti")
     else:
-        print("notok")
+        print("non aggiunti")
 
 
 def getLetterboxdLibrary():
