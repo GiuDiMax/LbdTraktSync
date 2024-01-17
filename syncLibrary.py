@@ -110,10 +110,16 @@ def setMoviePlex(f):
                         notes = notes + " DV"
                 elif s.streamType == 2:
                     if str(s.languageCode) not in sub:
-                        audio = audio + "-" + str(s.languageCode)
+                        if str(s.languageCode) == "None":
+                            audio = audio + "-" + "undef"
+                        else:
+                            audio = audio + "-" + str(s.languageCode)
                 elif s.streamType == 3:
-                    if str(s.languageCode) not in sub:
-                        sub = sub + "-" + str(s.languageCode)
+                    if str(s.languageCode) not in sub and str(s.languageCode) in ['None', 'eng', 'ita']:
+                        if str(s.languageCode) == "None":
+                            sub = sub + "-" + "undef"
+                        else:
+                            sub = sub + "-" + str(s.languageCode)
             if audio != "":
                 notes = notes + " | " + audio[1:]
             if sub != "":
@@ -134,7 +140,7 @@ def getPlexLibrary():
         tth.append(Thread(target=setMoviePlex, args=(f,)))
         if i > 50:
             j = j + 1
-            print("ok " + str(50*j))
+            print("ok plex " + str(50*j))
             for t in tth:
                 t.start()
             for t in tth:
