@@ -109,14 +109,17 @@ def setMoviePlex(f):
                     if s.DOVIBLPresent:
                         notes = notes + " DV"
                 elif s.streamType == 2:
-                    if str(s.languageCode) not in sub:
+                    if str(s.languageCode) not in audio:
                         if str(s.languageCode) == "None":
-                            audio = audio + "-" + "undef"
+                            if "undef" not in audio:
+                                audio = audio + "-" + "undef"
                         else:
                             audio = audio + "-" + str(s.languageCode)
                 elif s.streamType == 3:
                     if str(s.languageCode) not in sub and str(s.languageCode) in ['None', 'eng', 'ita']:
                         if str(s.languageCode) == "None":
+                            if "undef" not in sub:
+                                sub = sub + "-" + "undef"
                             sub = sub + "-" + "undef"
                         else:
                             sub = sub + "-" + str(s.languageCode)
