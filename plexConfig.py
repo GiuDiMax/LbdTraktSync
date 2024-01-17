@@ -7,7 +7,7 @@ def get_plex_movie(MOVIE_LIBRARY_NAME):
     plex = PlexServer(PLEX_URL, PLEX_TOKEN)
     print("Retrieving a list of movies from the '{library}' library in Plex...".format(library=MOVIE_LIBRARY_NAME))
     movie_library = plex.library.section(MOVIE_LIBRARY_NAME)
-    #return movie_library.get('Dream Scenario')
+    #return movie_library.get('A.I. - Intelligenza Artificiale')
     return movie_library.all()
 
 

@@ -111,16 +111,15 @@ def setMoviePlex(f):
                 elif s.streamType == 2:
                     if str(s.languageCode) not in audio:
                         if str(s.languageCode) == "None":
-                            if "undef" not in audio:
-                                audio = audio + "-" + "undef"
+                            if "und" not in audio:
+                                audio = audio + "-" + "und"
                         else:
                             audio = audio + "-" + str(s.languageCode)
                 elif s.streamType == 3:
                     if str(s.languageCode) not in sub and str(s.languageCode) in ['None', 'eng', 'ita']:
                         if str(s.languageCode) == "None":
-                            if "undef" not in sub:
-                                sub = sub + "-" + "undef"
-                            sub = sub + "-" + "undef"
+                            if "und" not in sub:
+                                sub = sub + "-" + "und"
                         else:
                             sub = sub + "-" + str(s.languageCode)
             if audio != "":
@@ -150,6 +149,10 @@ def getPlexLibrary():
                 t.join()
             i = 0
             tth = []
+    for t in tth:
+        t.start()
+    for t in tth:
+        t.join()
     return plextot
 
 
@@ -212,4 +215,5 @@ if __name__ == '__main__':
     #print(getLbd(84958))
     #print(getLetterboxdLibrary())
     #getDiff()
+    #print(getPlexLibrary())
     print(getDiff(plex=True))
