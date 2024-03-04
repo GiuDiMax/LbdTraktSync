@@ -216,4 +216,5 @@ if __name__ == '__main__':
     #print(getLetterboxdLibrary())
     #getDiff()
     #print(getPlexLibrary())
-    print(getDiff(plex=True))
+    #print(getDiff(plex=True))
+    print(getTraktLibrary())
