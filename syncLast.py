@@ -39,17 +39,26 @@ def syncLast():
             return "error"
         if r == []:
             sync = True
-        else:
-            d1 = parse(r[0]['watched_at'])
-            d2 = parse(item['diaryEntry']['whenCreated'])
-            #print(d1)
-            #print(d2)
-            diff = abs((d1-d2).total_seconds())
-            #print(diff)
-            if diff >= 3600:
-                sync = True
+        d1 = parse(r[0]['watched_at'])
+        d2 = parse(item['diaryEntry']['whenCreated'])
+        d3 = parse(item['diaryEntry']['diaryDetails']['diaryDate']+'T00:00:00Z')
+        diff1 = abs((d1-d3).total_seconds())
+        diff2 = abs((d1-d2).total_seconds())
+        diff3 = abs((d2-d3).total_seconds())
+        #if not sync and (diff1 >= 86400 or diff2 >= 3600):
+        if not sync and (diff1 >= 86400 or diff2 >= 3600):
+            sync = True
+        #print(item['diaryEntry'])
         if sync:
+            if diff3 >= 86400:
+                return x
+                #datesel = d3
+            #else:
+                #return x
+            #    datesel = d2
+            #print(datesel)
             movie = {"movies": [{"watched_at": item['diaryEntry']['whenCreated'], "ids": {"tmdb": tmdb}}]}
+            #print(movie)
             x = requests.post(traktbaseurl + '/sync/history/', headers=getTraktHeaders(), json=movie).json()
             x['type'] = item['type']
         if 'rating' in item['diaryEntry']['film']['relationships'][0]['relationship']:
